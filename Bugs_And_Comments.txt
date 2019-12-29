@@ -1,14 +1,14 @@
-INicio de coccion no estan todos los inicios representados en el evento, si estan correctos los tiempos de inicio
+Bug: Inicio de coccion no estan todos los inicios representados en la tabla, si estan correctos los tiempos de inicio
  y Final. 
 
-Se pierde alrededor de 4  clientes en el resumen de la estadistica final. no se donde  se fueron esos clientes...
+Se pierde alrededor de 4  clientes en el resumen de la estadistica final....
 
-EL valor temporal de runge kutta esta hardcodeado en el script app ya que el sript del RK solamente lo utilicé para reprsentar
+EL valor temporal de runge kutta esta hardcodeado en el script de nombre MyApp ya que el sript del RungeKutta solamente lo utilicé para reprsentar
 la ecuacion. 
-Utilicé un array dinamico para almacenar el inicio de llegada del vector. 
+Utilicé un array dinamico para almacenar el inicio de llegada del vector(Me faltó representarlo en la tabla.. agregarlo!!). 
 
 en los parametros iniciales no usé desde y hasta sino lo que me parecia mas util parametrizar....Error!!
 Parametricé la media de llegada de clientes y el stock inicial... 
 
-Me corrigó Gonzalo Carena. Un capo realmente... 
+Me corrigió Gonzalo Carena. Un capo realmente!!
 
