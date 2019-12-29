@@ -1,0 +1,152 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>Final Simulacion</title>
+    <link rel="shortcut icon" href="Images/favicon.ico">
+    <link rel="stylesheet" href="Contents/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="Contents/Site2.css" type="text/css">
+    <link href="Contents/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery-3.4.1.min.js " type="text/javascript"></script>
+    <script src="Scripts/bootstrap.min.js" type="text/javascript"></script>
+    <script src="Scripts/angular.min.js" type="text/javascript"></script>
+    <script src="Scripts/ui-bootstrap-tpls-2.5.0.min.js" type="text/javascript"></script>
+    <script src="Scripts/popper.min.js" type="text/javascript"></script>
+    <script src="Scripts/App.js"></script>
+</head>
+
+<body ng-app='myApp' ng-controller='Simular1'>
+    <div>
+        <nav class="navbar align-content-lg-start navbar-expand-lg  navbar-dark bg-dark ">
+            <a class="navbar-brand" href="/inicio.html">
+                <img src="Images/64.png" width="30" height="30" class="d-inline-block align-top" alt="">Inicio
+            </a>
+            <a href="roman.html" title="angular con WebApi">Acerca de..</a>
+        </nav>
+    </div>
+    <form name="FormReg">
+
+        <div class="d-flex justify-content-around form-group row {{ (FormReg.Horas.$invalid && (FormReg.Horas.$touched || FormReg.$submitted)) ? 'has-error' : '' }}{{ (FormReg.Media.$invalid && (FormReg.Media.$touched || FormReg.$submitted)) ? 'has-error' : '' }}{{ (FormReg.Evento_nro.$invalid && (FormReg.Evento_nro.$touched || FormReg.$submitted)) ? 'has-error' : '' }}">
+
+            <!--campo Horas a Simular -->
+            <label class="control-label col-sm-1-offset-1">Cantidad de Horas </label>
+            <div class="col-sm-1">
+                <input type="number" id="Horas" max="9999" min="8" step="1" value="10" name="Horas" class="form-control" required ng-model="Horas" ng-pattern="/^[0-9]+$/" />
+                <span class="help-inline" ng-show="FormReg.Horas.$error.pattern ">8 Horas Min.</span>
+            </div>
+            <!--campo Eventos-->
+            <label class="control-label col-sm-1-offset-1">Llegada Media de Clientes: </label>
+            <div class="col-sm-1">
+                <input type="number" max="99" min="-100" step="1" name="Media" class="form-control" required ng-model="Media" maxlength="4" ng-pattern="/^[0-9]+$/" />
+                <span class="help-inline" ng-show="FormReg.Media.$error.pattern ">Numerico positivo hasta 2 Digitos.</span>
+            </div>
+            <!--campo a Stock Inicial-->
+            <label class="control-label col-sm-1-offset-1">Stock Inicial: </label>
+            <div class="col-sm-1">
+                <input type="number" max="99" min="10" step="1" name="Evento_nro" class="form-control" required ng-model="Evento_nro" maxlength="2" ng-pattern="/^[1-9][0-9]$/" />
+                <span class="help-inline" ng-show="FormReg.Evento_nro.$error.pattern"> Numerico positivo Entre 10 y 99</span>
+            </div>
+            <br><br><br>
+        </div>
+                       
+        <!-- Botones -->
+        <div class="d-flex justify-content-center">
+            <div class="row botones col-lg-6 d-flex justify-content-around">
+                <button class="btn btn-primary" ng-disabled="FormReg.Evento_nro.$error.pattern || FormReg.Horas.$error.pattern || FormReg.Eventos.$error.pattern " ng-click="Iniciar()"><span class="glyphicon glyphicon-fire"> </span>&nbsp; Iniciar</button>
+
+                <button class="btn btn-primary" ng-click="Limpiar()"><span class="glyphicon glyphicon-erase"> </span>&nbsp; Limpiar</button>
+
+                <button class="btn btn-primary" ng-click="Resumen()"><span class="glyphicon glyphicon-plus"> </span>&nbsp;Resumen</button>
+
+                 <a class="btn btn-primary" href="/RungeKutta.html" role="button"><span class="glyphicon glyphicon-plus"> </span>&nbsp;Runge Kutta &raquo;</a>
+
+                <button class="btn btn-primary" ng-click="Volver()"><span class="glyphicon glyphicon-arrow-left"> </span>&nbsp;Volver</button>
+
+            </div>
+        </div>
+    </form>
+    <br><br>
+    <!-- RESUMEN!!! -->
+    <div id="Css_Resumen" class="d-flex justify-content-center" ng-show="AccionABMC == 'R'">
+
+        <p>
+            <label>&starf;&nbsp;&nbsp;Total de Llegadas de CLientes&nbsp;&nbsp;:&nbsp;{{Contador_ll_Clientes}}</label>
+            <br>
+            <label>&starf;&nbsp;&nbsp;Proporci&oacute;n de Clientes sin Atencion&nbsp;&nbsp;:&nbsp;{{Proporcion  | number:1}} &percnt; Contabilizando&nbsp;&nbsp;{{No_Atendidos}} Clientes </label>
+            <br>
+            <label>&starf;&nbsp;&nbsp;Proporci&oacute;n de Clientes Atendidos&nbsp;&nbsp;:&nbsp;{{Proporcion_Atendidos | number:1}} &percnt; Contabilizando&nbsp;&nbsp;{{Atendidos}} Clientes  </label>
+            <br>
+            <label>&starf;&nbsp;&nbsp;Clientes que esperaron m&aacute;s  de 5 Minutos&nbsp;sin Stock&nbsp;:&nbsp;{{Esperas}}  </label>
+            <br>
+
+        </p>
+    </div>
+    <!--<div class="d-flex justify-content-center" ng-show="AccionABMC == 'R'">
+        <p>
+            <h3>
+                ***Recomendaci&oacute;n*** : Dado que la proporcion de clientes que se retirar sin comprar es alta<br> Es imprescindible agregar un segundo Horno  
+
+            </h3>
+        </p>
+    </div>-->
+
+            
+        <div class="table-responsive table" ng-show="AccionABMC == 'L'" id="TablayPaginador ">
+            <table id="tbAbm" class="table table-bordered table">
+                <tr>
+                    <th class="text-center">&nbsp; # &nbsp;</th>
+                    <th class="text-center">&nbsp;&nbsp;&nbsp;Evento&nbsp;&nbsp;&nbsp;</th>
+                    <th class="text-center">&nbsp;&nbsp;&nbsp;Reloj&nbsp;&nbsp;&nbsp;</th>
+                    <th class="text-center"> RND_LL_Cliente&nbsp;</th>
+                    <th class="text-center"> T_entre_LL_Cliente&nbsp;</th>
+                    <th class="text-center"> Prox_LL_Cliente&nbsp;</th>
+                    <th class="text-center"> Rnd_Cant_Prod&nbsp;</th>
+                    <th class="text-center"> Cantidad_Prod&nbsp;</th>
+                    <th class="text-center"> P_Estado&nbsp;</th>
+                    <th class="text-center"> P_RND_T_Atencion&nbsp;</th>
+                    <th class="text-center"> P_T_Atencion&nbsp;</th>
+                    <th class="text-center"> P_Hora_Fin_Atencion&nbsp;</th>
+                    <th class="text-center"> Cola&nbsp;</th>
+                    <th class="text-center"> Ac_Clientes_Atendidos&nbsp;</th>
+                    <th class="text-center"> Ac_Clientes_SinAtencion&nbsp;</th>
+                    <th class="text-center"> Stock_Actual&nbsp;</th>
+                    <th class="text-center"> Estado_Horno&nbsp;</th>
+                    <th class="text-center"> Hora_Inicio_Coccion&nbsp;</th>
+                    <th class="text-center"> Tiempo_Coccion&nbsp;</th>
+                    <th class="text-center"> Hora_Fin_Coccion&nbsp;</th>
+                    <th class="text-center"> Proxima_Hora_Coccion_Programada&nbsp;</th>
+                </tr>
+                 
+                <tr ng-repeat="item in items" class="text-center" ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
+                    <td>{{item.nro}}</td>
+                    <td>{{item.Evento}}</td>
+                    <td>{{item.Reloj | number:3}}</td>
+                    <td>{{item.RND_LL_Cliente| number:3}}</td>
+                    <td>{{item.T_entre_LL_Cliente| number:3}}</td>
+                    <td>{{item.Prox_LL_Cliente| number:3}}</td>
+                    <td>{{item.Rnd_Cant_Prod| number:3}}</td>
+                    <td>Prod&nbsp;:&nbsp;{{item.Cantidad_Prod}}</td>
+                    <td>{{item.P_Estado}}</td>
+                    <td>{{item.P_RND_T_Atencion| number:3}}</td>
+                    <td>{{item.P_T_Atencion| number:3}}</td>
+                    <td>{{item.P_Hora_Fin_Atencion| number:3}}</td>
+                    <td>Cola&nbsp;:&nbsp;{{item.Cola}}</td>
+                    <td>Atendidos&nbsp;:&nbsp;{{item.Ac_Clientes_Atendidos}}</td>
+                    <td>Sin Atencion&nbsp;:&nbsp;{{item.Ac_Clientes_SinAtencion}}</td>
+                    <td>Stock&nbsp;:&nbsp;{{item.Stock_Actual}}</td>
+                    <td>{{item.Estado_Horno}}</td>
+                    <td>{{item.Hora_Inicio_Coccion| number:3}}</td>
+                    <td>{{item.Tiempo_Coccion| number:3}}</td>
+                    <td>{{item.Hora_Fin_Coccion| number:3}}</td>
+                    <td>{{item.Proxima_Hora_Coccion_Programada| number:3}}</td>
+                </tr>
+
+            </table>
+
+       
+        </div>
+
+
+</body>
+</html>

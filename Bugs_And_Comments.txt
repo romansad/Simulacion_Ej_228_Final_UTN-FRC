@@ -1,0 +1,14 @@
+INicio de coccion no estan todos los inicios representados en el evento, si estan correctos los tiempos de inicio
+ y Final. 
+
+Se pierde alrededor de 4  clientes en el resumen de la estadistica final. no se donde  se fueron esos clientes...
+
+EL valor temporal de runge kutta esta hardcodeado en el script app ya que el sript del RK solamente lo utilicé para reprsentar
+la ecuacion. 
+Utilicé un array dinamico para almacenar el inicio de llegada del vector. 
+
+en los parametros iniciales no usé desde y hasta sino lo que me parecia mas util parametrizar....Error!!
+Parametricé la media de llegada de clientes y el stock inicial... 
+
+Me corrigó Gonzalo Carena. Un capo realmente... 
+
