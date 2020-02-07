@@ -10,5 +10,3 @@ Utilicé un array dinamico para almacenar el inicio de llegada del vector(Me fal
 en los parametros iniciales no usé desde y hasta sino lo que me parecia mas util parametrizar....Error!!
 Parametricé la media de llegada de clientes y el stock inicial... 
 
-Me corrigió Gonzalo Carena. Un capo realmente!!
-
